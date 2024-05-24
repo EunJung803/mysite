@@ -1,10 +1,14 @@
 package com.poscodx.mysite.controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.poscodx.mysite.dao.UserDao;
+import com.poscodx.mysite.vo.UserVo;
 
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -19,8 +23,30 @@ public class UserServlet extends HttpServlet {
 				.getRequestDispatcher("WEB-INF/views/user/joinform.jsp")
 				.forward(request, response);
 		}
-		else if("".equals(action)) {
+		else if("join".equals(action)) {
+			String name = request.getParameter("name");
+			String email = request.getParameter("email");
+			String password = request.getParameter("password");
+			String gender = request.getParameter("gender");
 			
+			UserVo vo = new UserVo();
+			
+			vo.setName(name);
+			vo.setEmail(email);
+			vo.setPassword(password);
+			vo.setGender(gender);
+			
+			System.out.println(vo);
+			
+			new UserDao().insert(vo);
+			
+			response.sendRedirect(request.getContextPath() + "/user?a=joinsuccess");
+			
+		}
+		else if("joinsuccess".equals(action)) {
+			request
+			.getRequestDispatcher("WEB-INF/views/user/joinsuccess.jsp")
+			.forward(request, response);
 		}
 		else if("".equals(action)) {
 			
