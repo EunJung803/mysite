@@ -11,3 +11,7 @@ delete from guestbook where no = 1 and password = password('1234');
 
 -- test
 select * from guestbook;
+
+-- 방명록 contents에 이모티콘 삽입되도록
+ALTER DATABASE webdb CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+ALTER TABLE guestbook CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
