@@ -38,7 +38,7 @@ public class GuestbookDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt1 = conn.prepareStatement("insert into guestbook(name, password, contents, reg_date) values(?, ?, ?, now())");
+			PreparedStatement pstmt1 = conn.prepareStatement("insert into guestbook(name, password, contents, reg_date) values(?, password(?), ?, now())");
 			PreparedStatement pstmt2 = conn.prepareStatement("select last_insert_id() from dual");
 		) {
 			
@@ -101,7 +101,7 @@ public class GuestbookDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = ?");
+			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = password(?)");
 		) {
 
 			Long no = Long.parseLong(strNo);
