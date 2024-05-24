@@ -32,11 +32,11 @@
 						</tr>
 					</table>
 				</form>
+				<ul>
 				<%
 					int cnt = list.size();
 					for(GuestbookVo vo : list) {
 				%>
-				<ul>
 					<li>
 						<table>
 							<tr>
@@ -54,10 +54,10 @@
 							</tr>
 						</table>
 					</li>
-				</ul>
 				<%
 					}
 				%>
+				</ul>
 				<br>
 			</div>
 		</div>
