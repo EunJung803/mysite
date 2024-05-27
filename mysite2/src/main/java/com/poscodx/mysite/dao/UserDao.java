@@ -65,7 +65,7 @@ public class UserDao {
 		
 		try (
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("select * from user where email = '?' and password = password(?)");
+			PreparedStatement pstmt = conn.prepareStatement("select no, name from user where email = ? and password = password(?)");
 		) {
 			
 			pstmt.setString(1, email);
@@ -81,6 +81,38 @@ public class UserDao {
 				
 				result.setNo(no);
 				result.setName(name);
+			}
+			
+			rs.close();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+	    
+		return result;
+	}
+
+	public UserVo findByNo(Long no) {
+		
+		UserVo result = null;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("select * from user where no = ?");
+		) {
+			
+			pstmt.setLong(1, no);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+//				Long id = rs.getLong(1);
+//				String name = rs.getString(2);
+//				
+//				result = new UserVo();
+//				
+//				result.setNo(no);
+//				result.setName(name);
 			}
 			
 			rs.close();
