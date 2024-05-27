@@ -30,7 +30,7 @@ public abstract class ActionServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		super.doGet(request, response);
+		doGet(request, response);
 	}
 	
 	

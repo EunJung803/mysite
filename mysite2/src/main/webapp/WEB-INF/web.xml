@@ -15,7 +15,6 @@
     <servlet-name>MainServlet</servlet-name>
     <url-pattern>/main</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description></description>
     <display-name>UserServlet</display-name>
@@ -26,7 +25,6 @@
     <servlet-name>UserServlet</servlet-name>
     <url-pattern>/user</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description></description>
     <display-name>GuestbookServlet</display-name>
@@ -37,18 +35,30 @@
     <servlet-name>GuestbookServlet</servlet-name>
     <url-pattern>/guestbook</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <description></description>
+    <display-name>BoardServlet</display-name>
+    <servlet-name>BoardServlet</servlet-name>
+    <servlet-class>com.poscodx.mysite.controller.BoardServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BoardServlet</servlet-name>
+    <url-pattern>/board</url-pattern>
+  </servlet-mapping>
   
   <!-- common error page -->
   <error-page>
-  	<error-code>400</error-code>
-  	<location>/WEB-INF/error/400.jsp</location>
+    <error-code>400</error-code>
+    <location>/WEB-INF/views/errors/400.jsp</location>
   </error-page>
   <error-page>
-  	<error-code>404</error-code>
-  	<location>/WEB-INF/error/400.jsp</location>
+    <error-code>404</error-code>
+    <location>/WEB-INF/views/errors/404.jsp</location>
   </error-page>
-  
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/views/errors/500.jsp</location>
+  </error-page>
   
   <!-- default files -->
   <welcome-file-list>
@@ -59,5 +69,5 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-
+  
 </web-app>
