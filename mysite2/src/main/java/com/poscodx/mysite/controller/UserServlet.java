@@ -5,7 +5,7 @@ import java.util.Map;
 import com.poscodx.mysite.controller.action.main.MainAction;
 import com.poscodx.mysite.controller.action.user.JoinAction;
 import com.poscodx.mysite.controller.action.user.JoinFormAction;
-import com.poscodx.mysite.controller.action.user.JoinSuccess;
+import com.poscodx.mysite.controller.action.user.JoinSuccessAction;
 import com.poscodx.mysite.controller.action.user.LoginAction;
 import com.poscodx.mysite.controller.action.user.LoginFormAction;
 import com.poscodx.mysite.controller.action.user.LogoutAction;
@@ -18,7 +18,7 @@ public class UserServlet extends ActionServlet {
 	private Map<String, Action> mapAction = Map.of(
 			"joinform", new JoinFormAction(),
 			"join", new JoinAction(),
-			"joinsuccess", new JoinSuccess(),
+			"joinsuccess", new JoinSuccessAction(),
 			"loginform", new LoginFormAction(),
 			"login", new LoginAction(),
 			"logout", new LogoutAction(),

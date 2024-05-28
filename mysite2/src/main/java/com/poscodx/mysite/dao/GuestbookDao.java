@@ -95,26 +95,21 @@ public class GuestbookDao {
 		
 	}
 	
-	public int deleteByNoAndPassword(String strNo, String password) {
-
+	public int deleteByNoAndPassword(Long no, String password) {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = password(?)");
-		) {
-
-			Long no = Long.parseLong(strNo);
+			Connection conn = getConnection();	
+			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = ?");
+		){
 			pstmt.setLong(1, no);
 			pstmt.setString(2, password);
 			result = pstmt.executeUpdate();
-			
 		} catch (SQLException e) {
-			System.out.println("error: " + e);
+			System.out.println("Error:" + e);
 		}
 		
-		return result;
-		
+		return result;		
 	}
 
 }

@@ -24,6 +24,12 @@
 		    <artifactId>mariadb-java-client</artifactId>
 		    <version>3.2.0</version>
 		</dependency>
+		<!-- jstl -->
+		<dependency>
+		    <groupId>jstl</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+		</dependency>
 		<!-- servlet -->
 		<dependency>
 		    <groupId>javax.servlet</groupId>
