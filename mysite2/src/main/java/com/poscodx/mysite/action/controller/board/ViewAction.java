@@ -1,4 +1,4 @@
-package com.poscodx.mysite.action.board;
+package com.poscodx.mysite.action.controller.board;
 
 import java.io.IOException;
 
@@ -8,13 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.poscodx.mysite.controller.ActionServlet.Action;
 import com.poscodx.mysite.dao.BoardDao;
-import com.poscodx.mysite.vo.BoardVo;
 
 public class ViewAction implements Action {
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		request.setAttribute("list", new BoardDao().findAll());
 		
 		String no = request.getParameter("no");
 		

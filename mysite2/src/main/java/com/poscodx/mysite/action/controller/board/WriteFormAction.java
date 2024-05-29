@@ -1,4 +1,4 @@
-package com.poscodx.mysite.action.board;
+package com.poscodx.mysite.action.controller.board;
 
 import java.io.IOException;
 

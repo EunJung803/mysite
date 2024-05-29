@@ -44,7 +44,7 @@
 					<a href="${pageContext.request.contextPath}/board">글목록</a>
 					<c:choose>
 						<c:when test='${authUser.no eq vo.userNo }'>
-							<a href="${pageContext.request.contextPath}/board?a=update&no=${vo.no }">글수정</a>
+							<a href="${pageContext.request.contextPath}/board?a=modifyform&no=${vo.no }">글수정</a>
 						</c:when>
 					</c:choose>
 				</div>
