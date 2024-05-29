@@ -38,7 +38,7 @@ public class BoardDao {
 		
 		try (
 				Connection conn = getConnection();
-				PreparedStatement pstmt1 = conn.prepareStatement("insert into board(title, contents, hit, reg_date, g_no, o_no, depth, user_no) values(?, ?, ?, now(), ?, ?, ?, ?);");
+				PreparedStatement pstmt1 = conn.prepareStatement("insert into board(title, contents, hit, reg_date, g_no, o_no, depth, user_no) values(?, ?, ?, now(), ?, ?, ?, ?)");
 				PreparedStatement pstmt2 = conn.prepareStatement("select last_insert_id() from dual");
 			) {
 				
@@ -95,7 +95,7 @@ public class BoardDao {
 		try (
 		    	Connection conn = getConnection();
 	    		PreparedStatement pstmt = conn.prepareStatement(
-		    					"select a.no, b.name, a.title, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s') "
+		    					"select a.no, b.name, a.title, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
 			    				+ "from board a, user b "
 			    				+ "where a.user_no = b.no "
 			    				+ "order by g_no desc, o_no asc");
@@ -107,12 +107,14 @@ public class BoardDao {
 		    		String name = rs.getString(2);
 		    		String title = rs.getString(3);
 		    		String regDate = rs.getString(4);
+		    		Long userNo = rs.getLong(5);
 		    		
 		    		BoardVo vo = new BoardVo();
 		    		vo.setNo(no);
 		    		vo.setUserName(name);
 		    		vo.setTitle(title);
 		    		vo.setRegDate(regDate);
+		    		vo.setUserNo(userNo);
 		    		
 		    		result.add(vo);
 		    	}
@@ -125,6 +127,7 @@ public class BoardDao {
 	}
 	
 	public BoardVo findByNo(String boardNo) {
+		
 		BoardVo result = null;
 		
 		try (
@@ -136,7 +139,7 @@ public class BoardDao {
 								+ "and a.no = ?");	
 			) {
 				
-				pstmt.setLong(1, Integer.parseInt(boardNo));
+				pstmt.setLong(1, Long.parseLong(boardNo));
 				
 				ResultSet rs = pstmt.executeQuery();
 				
@@ -154,6 +157,7 @@ public class BoardDao {
 					result.setTitle(title);
 					result.setContents(contents);
 					result.setRegDate(regDate);
+					result.setUserNo(Long.parseLong(boardNo));
 				}
 				
 				rs.close();
@@ -163,6 +167,25 @@ public class BoardDao {
 			}
 		
 		return result;
+	}
+
+	public int deleteByNo(Long no) {
+		
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();	
+			PreparedStatement pstmt = conn.prepareStatement("delete from board where no = ?");
+		){
+			pstmt.setLong(1, no);
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("Error:" + e);
+		}
+		
+		return result;
+		
 	}
 	
 	

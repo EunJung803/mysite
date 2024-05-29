@@ -38,7 +38,11 @@
 							<td>${vo.userName }</td>
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
-							<td><a href="" class="del">삭제</a></td>
+							<c:choose>
+								<c:when test='${authUser.no eq vo.userNo }'>
+									<td><a href="${pageContext.request.contextPath}/board?a=delete&no=${vo.no }" class="del">삭제</a></td>
+								</c:when>
+							</c:choose>
 						</tr>		
 					</c:forEach>
 				</table>
@@ -101,15 +105,13 @@
 				</div>					
 				<!-- pager 추가 -->
 				
-				<div class="bottom">
 				<c:choose>
-					<c:when test='${not empty sessionScope.authUser }'>
-					<a href="${pageContext.request.contextPath}/board?a=writeform" id="new-book">글쓰기</a>
+					<c:when test='${not empty authUser }'>
+					<div class="bottom">
+						<a href="${pageContext.request.contextPath}/board?a=writeform" id="new-book">글쓰기</a>
+					</div>		
 					</c:when>
-					<c:otherwise>
-					</c:otherwise>
 				</c:choose>
-				</div>				
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp">

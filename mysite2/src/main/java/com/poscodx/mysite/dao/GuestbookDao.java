@@ -100,7 +100,7 @@ public class GuestbookDao {
 		
 		try (
 			Connection conn = getConnection();	
-			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = ?");
+			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = password(?)");
 		){
 			pstmt.setLong(1, no);
 			pstmt.setString(2, password);
