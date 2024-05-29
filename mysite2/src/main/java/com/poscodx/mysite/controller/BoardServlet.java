@@ -1,13 +1,24 @@
 package com.poscodx.mysite.controller;
 
+import java.util.Map;
+
+import com.poscodx.mysite.action.board.ListAction;
+import com.poscodx.mysite.action.board.WriteAction;
+import com.poscodx.mysite.action.board.WriteFormAction;
 
 public class BoardServlet extends ActionServlet {
 	private static final long serialVersionUID = 1L;
 
+	private Map<String, Action> mapAction = Map.of(
+		"writeform", new WriteFormAction(),
+		"write", new WriteAction()
+//		"deleteform", new DeleteFormAction(),
+//		"delete", new DeleteAction()
+	);
+			
 	@Override
 	protected Action getAction(String actionName) {
-		// TODO Auto-generated method stub
-		return null;
+		return mapAction.getOrDefault(actionName, new ListAction());
 	}
 
 }
