@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.poscodx.mysite.vo.BoardVo;
-import com.poscodx.mysite.vo.GuestbookVo;
+import com.poscodx.mysite.vo.UserVo;
 
 public class BoardDao {
 	
@@ -116,6 +116,47 @@ public class BoardDao {
 		    		
 		    		result.add(vo);
 		    	}
+			     
+			} catch (SQLException e) {
+				System.out.println("error: " + e);
+			}
+		
+		return result;
+	}
+	
+	public BoardVo findByNo(String boardNo) {
+		BoardVo result = null;
+		
+		try (
+				Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(
+								"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s') "
+								+ "from board a, user b "
+								+ "where a.user_no = b.no "
+								+ "and a.no = ?");	
+			) {
+				
+				pstmt.setLong(1, Integer.parseInt(boardNo));
+				
+				ResultSet rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					Long no = rs.getLong(1);
+					String userName = rs.getString(2);
+					String title = rs.getString(3);
+					String contents = rs.getString(4);
+					String regDate = rs.getString(5);
+					
+					result = new BoardVo();
+					
+					result.setNo(no);
+					result.setUserName(userName);
+					result.setTitle(title);
+					result.setContents(contents);
+					result.setRegDate(regDate);
+				}
+				
+				rs.close();
 			     
 			} catch (SQLException e) {
 				System.out.println("error: " + e);
