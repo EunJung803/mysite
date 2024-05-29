@@ -102,7 +102,13 @@
 				<!-- pager 추가 -->
 				
 				<div class="bottom">
+				<c:choose>
+					<c:when test='${not empty sessionScope.authUser }'>
 					<a href="${pageContext.request.contextPath}/board?a=writeform" id="new-book">글쓰기</a>
+					</c:when>
+					<c:otherwise>
+					</c:otherwise>
+				</c:choose>
 				</div>				
 			</div>
 		</div>
