@@ -133,7 +133,7 @@ public class BoardDao {
 		try (
 				Connection conn = getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(
-								"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s') "
+								"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
 								+ "from board a, user b "
 								+ "where a.user_no = b.no "
 								+ "and a.no = ?");	
@@ -149,6 +149,7 @@ public class BoardDao {
 					String title = rs.getString(3);
 					String contents = rs.getString(4);
 					String regDate = rs.getString(5);
+					Long userNo = rs.getLong(6);
 					
 					result = new BoardVo();
 					
@@ -157,7 +158,7 @@ public class BoardDao {
 					result.setTitle(title);
 					result.setContents(contents);
 					result.setRegDate(regDate);
-					result.setUserNo(Long.parseLong(boardNo));
+					result.setUserNo(userNo);
 				}
 				
 				rs.close();
