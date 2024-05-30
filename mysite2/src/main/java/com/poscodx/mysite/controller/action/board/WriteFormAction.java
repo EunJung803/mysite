@@ -1,4 +1,4 @@
-package com.poscodx.mysite.action.controller.board;
+package com.poscodx.mysite.controller.action.board;
 
 import java.io.IOException;
 
@@ -7,19 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.poscodx.mysite.controller.ActionServlet.Action;
-import com.poscodx.mysite.dao.BoardDao;
 
-public class ModifyFormAction implements Action {
-
+public class WriteFormAction implements Action {
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String no = request.getParameter("no");
-		
-		request.setAttribute("vo", new BoardDao().findByNo(no));
-		
 		request
-		.getRequestDispatcher("WEB-INF/views/board/modify.jsp")
+		.getRequestDispatcher("WEB-INF/views/board/write.jsp")
 		.forward(request, response);
 	}
-
 }

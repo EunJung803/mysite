@@ -1,4 +1,4 @@
-package com.poscodx.mysite.action.controller.board;
+package com.poscodx.mysite.controller.action.board;
 
 import java.io.IOException;
 
@@ -12,11 +12,10 @@ import com.poscodx.mysite.dao.BoardDao;
 import com.poscodx.mysite.vo.BoardVo;
 import com.poscodx.mysite.vo.UserVo;
 
-public class ModifyAction implements Action {
+public class WriteAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		HttpSession session = request.getSession();
 		
 		// Access Control
@@ -30,23 +29,26 @@ public class ModifyAction implements Action {
 			return;
 		}
 		
-		/////
+		//////
 		
-		String no = request.getParameter("no");
 		String title = request.getParameter("title");
 		String contents = request.getParameter("contents");
 		
+		int maxGroupNo = new BoardDao().findMaxGroupNo();
+		
 		BoardVo vo = new BoardVo();
 		
-		vo.setNo(Long.parseLong(no));
 		vo.setTitle(title);
 		vo.setContents(contents);
+		vo.setHit(0);
+		vo.setGroupNo(maxGroupNo + 1);
+		vo.setOrderNo(1);
+		vo.setDepth(0);
 		vo.setUserNo(authUser.getNo());
 		
-		request.setAttribute("vo", new BoardDao().update(vo));
+		new BoardDao().insert(vo);
 		
 		response.sendRedirect(request.getContextPath() + "/board");
-
+		
 	}
-
 }
