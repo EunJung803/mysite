@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.poscodx.mysite.vo.BoardVo;
-import com.poscodx.mysite.vo.UserVo;
 
 public class BoardDao {
 	
@@ -37,31 +36,31 @@ public class BoardDao {
 		int result = 0;
 		
 		try (
-				Connection conn = getConnection();
-				PreparedStatement pstmt1 = conn.prepareStatement("insert into board(title, contents, hit, reg_date, g_no, o_no, depth, user_no) values(?, ?, ?, now(), ?, ?, ?, ?)");
-				PreparedStatement pstmt2 = conn.prepareStatement("select last_insert_id() from dual");
-			) {
-				
-				pstmt1.setString(1, vo.getTitle());
-				pstmt1.setString(2, vo.getContents());
-				pstmt1.setInt(3, vo.getHit());
-				pstmt1.setInt(4, vo.getGroupNo());
-				pstmt1.setInt(5, vo.getOrderNo());
-				pstmt1.setInt(6, vo.getDepth());
-				pstmt1.setLong(7, vo.getUserNo());
-				
-				result = pstmt1.executeUpdate();
-				
-				ResultSet rs = pstmt2.executeQuery();
-				
-				vo.setNo(rs.next() ? rs.getLong(1) : null);
-				
-				rs.close();
-			     
-			} catch (SQLException e) {
-				System.out.println("error: " + e);
-			}
-		
+			Connection conn = getConnection();
+			PreparedStatement pstmt1 = conn.prepareStatement("insert into board(title, contents, hit, reg_date, g_no, o_no, depth, user_no) values(?, ?, ?, now(), ?, ?, ?, ?)");
+			PreparedStatement pstmt2 = conn.prepareStatement("select last_insert_id() from dual");
+		) {
+			
+			pstmt1.setString(1, vo.getTitle());
+			pstmt1.setString(2, vo.getContents());
+			pstmt1.setInt(3, vo.getHit());
+			pstmt1.setInt(4, vo.getGroupNo());
+			pstmt1.setInt(5, vo.getOrderNo());
+			pstmt1.setInt(6, vo.getDepth());
+			pstmt1.setLong(7, vo.getUserNo());
+			
+			result = pstmt1.executeUpdate();
+			
+			ResultSet rs = pstmt2.executeQuery();
+			
+			vo.setNo(rs.next() ? rs.getLong(1) : null);
+			
+			rs.close();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+	
 		return result;
 		
 	}
@@ -71,20 +70,20 @@ public class BoardDao {
 		int result = 0;
 		
 		try (
-				Connection conn = getConnection();
-				PreparedStatement pstmt = conn.prepareStatement("select max(g_no) from board");
-				ResultSet rs = pstmt.executeQuery();
-			) {
-				if(rs.next()) {
-					result = rs.getInt(1);
-				}
-				
-				rs.close();
-			     
-			} catch (SQLException e) {
-				System.out.println("error: " + e);
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("select max(g_no) from board");
+			ResultSet rs = pstmt.executeQuery();
+		) {
+			if(rs.next()) {
+				result = rs.getInt(1);
 			}
-		
+			
+			rs.close();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+	
 		return result;
 	}
 
@@ -93,35 +92,35 @@ public class BoardDao {
 		List<BoardVo> result = new ArrayList<>();
 		
 		try (
-		    	Connection conn = getConnection();
-	    		PreparedStatement pstmt = conn.prepareStatement(
-		    					"select a.no, b.name, a.title, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
-			    				+ "from board a, user b "
-			    				+ "where a.user_no = b.no "
-			    				+ "order by g_no desc, o_no asc");
-	    		ResultSet rs = pstmt.executeQuery();
-		    ) {
+	    	Connection conn = getConnection();
+    		PreparedStatement pstmt = conn.prepareStatement(
+	    					"select a.no, b.name, a.title, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
+		    				+ "from board a, user b "
+		    				+ "where a.user_no = b.no "
+		    				+ "order by g_no desc, o_no asc ");
+    		ResultSet rs = pstmt.executeQuery();
+	    ) {
 
-		    	while(rs.next()) {
-		    		Long no = rs.getLong(1);
-		    		String name = rs.getString(2);
-		    		String title = rs.getString(3);
-		    		String regDate = rs.getString(4);
-		    		Long userNo = rs.getLong(5);
-		    		
-		    		BoardVo vo = new BoardVo();
-		    		vo.setNo(no);
-		    		vo.setUserName(name);
-		    		vo.setTitle(title);
-		    		vo.setRegDate(regDate);
-		    		vo.setUserNo(userNo);
-		    		
-		    		result.add(vo);
-		    	}
-			     
-			} catch (SQLException e) {
-				System.out.println("error: " + e);
-			}
+	    	while(rs.next()) {
+	    		Long no = rs.getLong(1);
+	    		String name = rs.getString(2);
+	    		String title = rs.getString(3);
+	    		String regDate = rs.getString(4);
+	    		Long userNo = rs.getLong(5);
+	    		
+	    		BoardVo vo = new BoardVo();
+	    		vo.setNo(no);
+	    		vo.setUserName(name);
+	    		vo.setTitle(title);
+	    		vo.setRegDate(regDate);
+	    		vo.setUserNo(userNo);
+	    		
+	    		result.add(vo);
+	    	}
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
 		
 		return result;
 	}
@@ -131,41 +130,41 @@ public class BoardDao {
 		BoardVo result = null;
 		
 		try (
-				Connection conn = getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(
-								"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
-								+ "from board a, user b "
-								+ "where a.user_no = b.no "
-								+ "and a.no = ?");	
-			) {
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+							"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
+							+ "from board a, user b "
+							+ "where a.user_no = b.no "
+							+ "and a.no = ?");	
+		) {
+			
+			pstmt.setLong(1, Long.parseLong(boardNo));
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				Long no = rs.getLong(1);
+				String userName = rs.getString(2);
+				String title = rs.getString(3);
+				String contents = rs.getString(4);
+				String regDate = rs.getString(5);
+				Long userNo = rs.getLong(6);
 				
-				pstmt.setLong(1, Long.parseLong(boardNo));
+				result = new BoardVo();
 				
-				ResultSet rs = pstmt.executeQuery();
-				
-				if(rs.next()) {
-					Long no = rs.getLong(1);
-					String userName = rs.getString(2);
-					String title = rs.getString(3);
-					String contents = rs.getString(4);
-					String regDate = rs.getString(5);
-					Long userNo = rs.getLong(6);
-					
-					result = new BoardVo();
-					
-					result.setNo(no);
-					result.setUserName(userName);
-					result.setTitle(title);
-					result.setContents(contents);
-					result.setRegDate(regDate);
-					result.setUserNo(userNo);
-				}
-				
-				rs.close();
-			     
-			} catch (SQLException e) {
-				System.out.println("error: " + e);
+				result.setNo(no);
+				result.setUserName(userName);
+				result.setTitle(title);
+				result.setContents(contents);
+				result.setRegDate(regDate);
+				result.setUserNo(userNo);
 			}
+			
+			rs.close();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
 		
 		return result;
 	}
@@ -175,16 +174,16 @@ public class BoardDao {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();	
-			PreparedStatement pstmt = conn.prepareStatement("delete from board where no = ?");
-		){
-			pstmt.setLong(1, no);
-			result = pstmt.executeUpdate();
+				Connection conn = getConnection();	
+				PreparedStatement pstmt = conn.prepareStatement("delete from board where no = ?");
+			){
+				pstmt.setLong(1, no);
+				result = pstmt.executeUpdate();
+				
+			} catch (SQLException e) {
+				System.out.println("Error:" + e);
+			}
 			
-		} catch (SQLException e) {
-			System.out.println("Error:" + e);
-		}
-		
 		return result;
 		
 	}
@@ -212,6 +211,80 @@ public class BoardDao {
 		return result;
 		
 	}
+
+	public int getTotalCount() {
+		
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("select count(no) from board");
+			ResultSet rs = pstmt.executeQuery();
+		) {
+			
+			if (rs.next()) {
+                return rs.getInt(1);
+            }
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+		    
+		return result;
+	}
+
+	public List<BoardVo> findBoards(int limitNum) {
+		
+		List<BoardVo> result = new ArrayList<>();
+		
+		try (
+	    	Connection conn = getConnection();
+    		PreparedStatement pstmt = conn.prepareStatement(
+	    					"select a.no, b.name, a.title, date_format(a.reg_date, '%Y/%m/%d %h:%i:%s'), a.user_no, a.hit, a.g_no, a.o_no, a.depth "
+		    				+ "from board a, user b "
+		    				+ "where a.user_no = b.no "
+		    				+ "order by g_no desc, o_no asc "
+		    				+ "limit ?, 5");
+	    ) {
+			
+			pstmt.setInt(1, limitNum);
+
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Long no = rs.getLong(1);
+	    		String name = rs.getString(2);
+	    		String title = rs.getString(3);
+	    		String regDate = rs.getString(4);
+	    		Long userNo = rs.getLong(5);
+	    		int hit = rs.getInt(6);
+	    		int groupNo = rs.getInt(7);
+	    		int orderNo = rs.getInt(8);
+	    		int depth = rs.getInt(9);
+				
+				BoardVo vo = new BoardVo();
+				
+	    		vo.setNo(no);
+	    		vo.setUserName(name);
+	    		vo.setTitle(title);
+	    		vo.setRegDate(regDate);
+	    		vo.setUserNo(userNo);
+	    		vo.setHit(hit);
+	    		vo.setGroupNo(groupNo);
+	    		vo.setOrderNo(orderNo);
+	    		vo.setDepth(depth);
+	    		
+	    		result.add(vo);
+			}
+			
+			rs.close();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
 	
+		return result;
+		
+	}
 	
 }

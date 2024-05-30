@@ -19,6 +19,7 @@
 					<input type="submit" value="찾기">
 				</form>
 				
+				<!-- 게시글 리스트 -->
 				<table class="tbl-ex">
 					<tr>
 						<th>번호</th>
@@ -28,83 +29,52 @@
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>				
-					<c:set var="count" value="${fn:length(list) }" />
+					<c:set var="count" value="${totalBoardCount }" />
 					<c:forEach items="${list }" var="vo" varStatus="status" >
 						<tr>
-							<td>${count - status.index}</td>
+							<td>${count - ((currPageNum-1) *  5) - status.index}</td>
 							<td style="text-align:left; padding-left:${20*vo.depth }px">
 								<a href="${pageContext.servletContext.contextPath }/board?a=view&no=${vo.no }">${vo.title }</a>
 							</td>
 							<td>${vo.userName }</td>
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
+							<td>
 							<c:choose>
 								<c:when test='${authUser.no eq vo.userNo }'>
-									<td><a href="${pageContext.request.contextPath}/board?a=delete&no=${vo.no }" class="del">삭제</a></td>
+									<a href="${pageContext.request.contextPath}/board?a=delete&no=${vo.no }" class="del">삭제</a>
 								</c:when>
 							</c:choose>
+							</td>
 						</tr>		
 					</c:forEach>
 				</table>
 				
-				<!--
-				<table class="tbl-ex">
-					<tr>
-						<th>번호</th>
-						<th>제목</th>
-						<th>글쓴이</th>
-						<th>조회수</th>
-						<th>작성일</th>
-						<th>&nbsp;</th>
-					</tr>				
-					<tr>
-						<td>3</td>
-						<td style="text-align:left; padding-left:${20*0 }px">
-						<a href="">세 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-10-11 12:04:20</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td style="text-align:left; padding-left:${20*1 }px">
-						<img src="${pageContext.servletContext.contextPath }/assets/images/reply.png">
-						<a href="">두 번째 글입니다.</a></td>
-						
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-10-02 12:04:12</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td style="text-align:left; padding-left:${20*2 }px">
-						<img src="${pageContext.servletContext.contextPath }/assets/images/reply.png">
-						<a href="">첫 번째 글입니다.</a></td>
-						
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-09-25 07:24:32</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
-				</table>
-				-->
-				
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
-						<li><a href="">◀</a></li>
-						<li><a href="">1</a></li>
-						<li class="selected">2</li>
-						<li><a href="">3</a></li>
-						<li>4</li>
-						<li>5</li>
-						<li><a href="">▶</a></li>
+					<c:if test="${currPageNum > 1}">
+						<li><a href="${pageContext.request.contextPath}/board?p=${currPageNum - 1}">◀</a></li>
+					</c:if>
+					
+					<c:forEach var="i" begin="1" end="${totalPages}">
+			            <c:choose>
+			                <c:when test="${i == currPageNum}">
+			                    <li class="selected">${i}</li>
+			                </c:when>
+			                <c:otherwise>
+			                    <li><a href="${pageContext.request.contextPath}/board?p=${i}">${i}</a></li>
+			                </c:otherwise>
+			            </c:choose>
+			        </c:forEach>
+					
+					<c:if test="${currPageNum < totalPages}">
+						<li><a href="${pageContext.request.contextPath}/board?p=${currPageNum + 1}">▶</a></li>
+					</c:if>
 					</ul>
-				</div>					
-				<!-- pager 추가 -->
+				</div>
 				
+				<!-- 글쓰기 버튼 -->
 				<c:choose>
 					<c:when test='${not empty authUser }'>
 					<div class="bottom">
