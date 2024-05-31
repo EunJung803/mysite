@@ -45,7 +45,7 @@ public class ModifyAction implements Action {
 		
 		request.setAttribute("vo", new BoardDao().update(vo));
 		
-		response.sendRedirect(request.getContextPath() + "/board");
+		response.sendRedirect(request.getContextPath() + "/board?a=view&no="+no+"&result=success");
 
 	}
 
