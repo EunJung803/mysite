@@ -53,6 +53,26 @@
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
+					<c:if test="${blockStartPageNo > 1}">
+						<li><a href="${pageContext.request.contextPath}/board?p=${blockStartPageNo - pagesPerBlock}">◀</a></li>
+					</c:if>
+					
+					<c:forEach var="i" begin="${blockStartPageNo }" end="${blockEndPageNo }">
+			            <c:choose>
+			                <c:when test="${i == currPageNum}">
+			                    <li class="selected">${i}</li>
+			                </c:when>
+			                <c:otherwise>
+			                    <li><a href="${pageContext.request.contextPath}/board?p=${i}">${i}</a></li>
+			                </c:otherwise>
+			            </c:choose>
+			        </c:forEach>
+					 
+					<c:if test="${blockEndPageNo < totalPages}">
+						<li><a href="${pageContext.request.contextPath}/board?p=${blockStartPageNo + pagesPerBlock}">▶</a></li>
+					</c:if> 
+					
+					<%-- 
 					<c:if test="${currPageNum > 1}">
 						<li><a href="${pageContext.request.contextPath}/board?p=${currPageNum - 1}">◀</a></li>
 					</c:if>
@@ -67,10 +87,11 @@
 			                </c:otherwise>
 			            </c:choose>
 			        </c:forEach>
-					
+					 
 					<c:if test="${currPageNum < totalPages}">
 						<li><a href="${pageContext.request.contextPath}/board?p=${currPageNum + 1}">▶</a></li>
 					</c:if>
+					 --%>
 					</ul>
 				</div>
 				
