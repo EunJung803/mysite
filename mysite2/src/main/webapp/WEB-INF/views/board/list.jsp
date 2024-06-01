@@ -52,7 +52,8 @@
 							<td>
 							<c:choose>
 								<c:when test='${authUser.no eq vo.userNo }'>
-									<a href="${pageContext.request.contextPath}/board?a=delete&no=${vo.no }" class="del">삭제</a>
+									<a href="#" class="del" onclick="confirmDelete(${vo.no})">삭제</a>
+									<%-- <a href="${pageContext.request.contextPath}/board?a=delete&no=${vo.no }" class="del">삭제</a> --%>
 								</c:when>
 							</c:choose>
 							</td>
@@ -99,5 +100,15 @@
 		</c:import>
 		<c:import url="/WEB-INF/views/includes/footer.jsp"/>
 	</div>
+	
+	<script>
+	    function confirmDelete(no) {
+	        if (confirm("해당 게시물을 삭제하시겠습니까?")) {
+	            window.location.href = "${pageContext.request.contextPath}/board?a=delete&no=" + no;
+	            alert('삭제 되었습니다.');
+	        }
+	    }
+	</script>
+	
 </body>
 </html>
