@@ -279,5 +279,28 @@ public class BoardDao {
 		return result;
 		
 	}
+
+	public int updateBoardHit(String no) {
+
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+							"update board set hit = hit + 1 "
+							+ "where no = ?");
+		) {
+			
+			pstmt.setLong(1, Long.parseLong(no));
+			
+			result = pstmt.executeUpdate();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+	    
+		return result;
+		
+	}
 	
 }

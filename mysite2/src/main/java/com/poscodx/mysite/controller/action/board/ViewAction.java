@@ -16,6 +16,8 @@ public class ViewAction implements Action {
 		
 		String no = request.getParameter("no");
 		
+		new BoardDao().updateBoardHit(no);
+		
 		request.setAttribute("vo", new BoardDao().findByNo(no));
 		
 		request
