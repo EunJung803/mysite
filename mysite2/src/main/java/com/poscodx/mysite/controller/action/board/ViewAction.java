@@ -28,10 +28,11 @@ public class ViewAction implements Action {
 				if("hit".equals(cookie.getName())) {		// 쿠키 중에 hit 있는지 확인
 					
 					// 해당 페이지를 접속한 적이 있는지 확인
-					if(cookie.getValue().contains(no)) {
+					if(cookie.getValue().contains("/" + no + "/")) {
 						visitFlag = true;
+						break;
 					} else {
-						cookie.setValue(cookie.getValue() + "/" + no);		// 쿠키에 해당 게시물 번호가 없으면 추가
+						cookie.setValue(cookie.getValue() + "/" + no + "/");		// 쿠키에 해당 게시물 번호가 없으면 추가
 						response.addCookie(cookie);
 						new BoardDao().updateBoardHit(no);		// 조회수 += 1
 						visitFlag = true;
@@ -45,7 +46,7 @@ public class ViewAction implements Action {
 		if(!visitFlag) {		// 기존 쿠키로 방문한 적 없으면 -> 쿠키 생성
 			new BoardDao().updateBoardHit(no);		// 조회수 += 1
 			
-			Cookie cookie = new Cookie("hit", no);
+			Cookie cookie = new Cookie("hit", "/" + no + "/");
 			cookie.setPath(request.getContextPath());
 			cookie.setMaxAge(24 * 60 * 60);
 			response.addCookie(cookie);
