@@ -86,44 +86,6 @@ public class BoardDao {
 	
 		return result;
 	}
-
-	public List<BoardVo> findAll() {
-		
-		List<BoardVo> result = new ArrayList<>();
-		
-		try (
-	    	Connection conn = getConnection();
-    		PreparedStatement pstmt = conn.prepareStatement(
-	    					"select a.no, b.name, a.title, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
-		    				+ "from board a, user b "
-		    				+ "where a.user_no = b.no "
-		    				+ "order by g_no desc, o_no asc ");
-    		ResultSet rs = pstmt.executeQuery();
-	    ) {
-
-	    	while(rs.next()) {
-	    		Long no = rs.getLong(1);
-	    		String name = rs.getString(2);
-	    		String title = rs.getString(3);
-	    		String regDate = rs.getString(4);
-	    		Long userNo = rs.getLong(5);
-	    		
-	    		BoardVo vo = new BoardVo();
-	    		vo.setNo(no);
-	    		vo.setUserName(name);
-	    		vo.setTitle(title);
-	    		vo.setRegDate(regDate);
-	    		vo.setUserNo(userNo);
-	    		
-	    		result.add(vo);
-	    	}
-		     
-		} catch (SQLException e) {
-			System.out.println("error: " + e);
-		}
-		
-		return result;
-	}
 	
 	public BoardVo findByNo(String boardNo) {
 		
@@ -132,7 +94,7 @@ public class BoardDao {
 		try (
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
-							"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no "
+							"select a.no, b.name, a.title, a.contents, date_format(a.reg_date, '%Y-%m-%d %h:%i:%s'), a.user_no, a.g_no, a.o_no, a.depth "
 							+ "from board a, user b "
 							+ "where a.user_no = b.no "
 							+ "and a.no = ?");	
@@ -149,6 +111,9 @@ public class BoardDao {
 				String contents = rs.getString(4);
 				String regDate = rs.getString(5);
 				Long userNo = rs.getLong(6);
+				int groupNo = rs.getInt(7);
+	    		int orderNo = rs.getInt(8);
+	    		int depth = rs.getInt(9);
 				
 				result = new BoardVo();
 				
@@ -158,6 +123,9 @@ public class BoardDao {
 				result.setContents(contents);
 				result.setRegDate(regDate);
 				result.setUserNo(userNo);
+				result.setGroupNo(groupNo);
+				result.setOrderNo(orderNo);
+				result.setDepth(depth);
 			}
 			
 			rs.close();
@@ -283,6 +251,31 @@ public class BoardDao {
 			System.out.println("error: " + e);
 		}
 	
+		return result;
+		
+	}
+
+	public int updateOrderNo(BoardVo vo) {
+		
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(
+							"update board set o_no = o_no + 1 "
+							+ "where g_no = ? "
+							+ "and o_no > ?");
+		) {
+			
+			pstmt.setInt(1, vo.getGroupNo());
+			pstmt.setInt(2, vo.getOrderNo());
+			
+			result = pstmt.executeUpdate();
+		     
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+	    
 		return result;
 		
 	}

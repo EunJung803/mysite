@@ -34,19 +34,38 @@ public class WriteAction implements Action {
 		String title = request.getParameter("title");
 		String contents = request.getParameter("contents");
 		
-		int maxGroupNo = new BoardDao().findMaxGroupNo();
+		String no = request.getParameter("no");
+//		System.out.println(no);
 		
 		BoardVo vo = new BoardVo();
+		BoardDao dao = new BoardDao();
 		
-		vo.setTitle(title);
-		vo.setContents(contents);
-		vo.setHit(0);
-		vo.setGroupNo(maxGroupNo + 1);
-		vo.setOrderNo(1);
-		vo.setDepth(0);
-		vo.setUserNo(authUser.getNo());
+		if (no == null || no.isEmpty()) {				// 새 글을 쓰는 경우
+			int maxGroupNo = dao.findMaxGroupNo();
+			
+			vo.setTitle(title);
+			vo.setContents(contents);
+			vo.setHit(0);
+			vo.setGroupNo(maxGroupNo + 1);
+			vo.setOrderNo(1);
+			vo.setDepth(0);
+			vo.setUserNo(authUser.getNo());
+		} else {										// 답글을 다는 경우
+			BoardVo parentVo = dao.findByNo(no);
+			
+			vo.setTitle(title);
+			vo.setContents(contents);
+			vo.setHit(0);
+			vo.setGroupNo(parentVo.getGroupNo());
+			vo.setOrderNo(parentVo.getOrderNo() + 1);
+			vo.setDepth(parentVo.getDepth() + 1);
+			vo.setUserNo(authUser.getNo());
+			
+			dao.updateOrderNo(parentVo);
+		}
 		
-		new BoardDao().insert(vo);
+		
+		dao.insert(vo);
 		
 		response.sendRedirect(request.getContextPath() + "/board");
 		

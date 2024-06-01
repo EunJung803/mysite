@@ -40,6 +40,7 @@
 						</td>
 					</tr>
 				</table>
+				
 				<div class="bottom">
 					<a href="${pageContext.request.contextPath}/board">글목록</a>
 					<c:choose>
@@ -48,6 +49,16 @@
 						</c:when>
 					</c:choose>
 				</div>
+				
+				<!-- 답글쓰기 버튼 -->
+				<c:choose>
+					<c:when test='${not empty authUser }'>
+					<div class="bottom">
+						<a href="${pageContext.request.contextPath}/board?a=writeform&no=${vo.no }" id="new-book">답글쓰기 </a>
+					</div>		
+					</c:when>
+				</c:choose>
+				
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
