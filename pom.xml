@@ -8,10 +8,10 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>mysite2</module>
+		<module>mysite3</module>
 	</modules>
 
 	<build>
-		<finalName>mysite2</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
