@@ -1,5 +1,9 @@
 package com.poscodx.mysite.exception;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -7,12 +11,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
-	public String handler(Exception e) {
+	public String handler(Exception e, Model model) {
 		
-		// 1. 로깅 (logging)
-		System.out.println(e);
+		// 1. 로깅 (logging)	
+		StringWriter errors = new StringWriter();		 // StringWriter == 메모리에다 writing, String 객체의 버퍼에 Write
+
+		e.printStackTrace(new PrintWriter(errors));
+		
+		System.out.println(errors.toString());
 		
 		// 2. 사과 (종료)
+		model.addAttribute("error", errors.toString());
 		return "errors/exception";
 		
 	}
