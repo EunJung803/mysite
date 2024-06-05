@@ -36,13 +36,13 @@
 							<c:choose>
 								<c:when test="${vo.depth eq 0 }">
 									<td style="text-align:left; padding-left:${20*vo.depth }px">
-										<a href="${pageContext.servletContext.contextPath }/board?a=view&no=${vo.no }">${vo.title }</a>
+										<a href="${pageContext.servletContext.contextPath }/board/view/${vo.no }">${vo.title }</a>
 									</td>
 								</c:when>
 								<c:otherwise>
 				                   	<td style="text-align:left; padding-left:${20*vo.depth }px">
 				                   		<img src="${pageContext.servletContext.contextPath }/assets/images/reply.png">
-										<a href="${pageContext.servletContext.contextPath }/board?a=view&no=${vo.no }">${vo.title }</a>
+										<a href="${pageContext.servletContext.contextPath }/board/view/${vo.no }">${vo.title }</a>
 									</td>
 				                </c:otherwise>
 							</c:choose>
@@ -65,7 +65,7 @@
 				<div class="pager">
 					<ul>
 					<c:if test="${blockStartPageNo > 1}">
-						<li><a href="${pageContext.request.contextPath}/board?p=${blockStartPageNo - pagesPerBlock}">◀</a></li>
+						<li><a href="${pageContext.request.contextPath}/board/${blockStartPageNo - pagesPerBlock}">◀</a></li>
 					</c:if>
 					
 					<c:forEach var="i" begin="${blockStartPageNo }" end="${blockEndPageNo }">
@@ -74,13 +74,13 @@
 			                    <li class="selected">${i}</li>
 			                </c:when>
 			                <c:otherwise>
-			                    <li><a href="${pageContext.request.contextPath}/board?p=${i}">${i}</a></li>
+			                    <li><a href="${pageContext.request.contextPath}/board/${i}">${i}</a></li>
 			                </c:otherwise>
 			            </c:choose>
 			        </c:forEach>
 					 
 					<c:if test="${blockEndPageNo < totalPages}">
-						<li><a href="${pageContext.request.contextPath}/board?p=${blockStartPageNo + pagesPerBlock}">▶</a></li>
+						<li><a href="${pageContext.request.contextPath}/board/${blockStartPageNo + pagesPerBlock}">▶</a></li>
 					</c:if> 
 					</ul>
 				</div>
@@ -89,7 +89,7 @@
 				<c:choose>
 					<c:when test='${not empty authUser }'>
 					<div class="bottom">
-						<a href="${pageContext.request.contextPath}/board?a=writeform" id="new-book">글쓰기</a>
+						<a href="${pageContext.request.contextPath}/board/write" id="new-book">글쓰기</a>
 					</div>		
 					</c:when>
 				</c:choose>
@@ -104,7 +104,7 @@
 	<script>
 	    function confirmDelete(no) {
 	        if (confirm("해당 게시물을 삭제하시겠습니까?")) {
-	            window.location.href = "${pageContext.request.contextPath}/board?a=delete&no=" + no;
+	            window.location.href = "${pageContext.request.contextPath}/board/delete/" + no;
 	            alert('삭제 되었습니다.');
 	        }
 	    }

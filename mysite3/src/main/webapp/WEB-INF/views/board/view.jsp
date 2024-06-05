@@ -45,7 +45,7 @@
 					<a href="${pageContext.request.contextPath}/board">글목록</a>
 					<c:choose>
 						<c:when test='${authUser.no eq vo.userNo }'>
-							<a href="${pageContext.request.contextPath}/board?a=modifyform&no=${vo.no }">글수정</a>
+							<a href="${pageContext.request.contextPath}/board/update/${vo.no }">글수정</a>
 						</c:when>
 					</c:choose>
 				</div>
@@ -54,7 +54,7 @@
 				<c:choose>
 					<c:when test='${not empty authUser }'>
 					<div class="bottom">
-						<a href="${pageContext.request.contextPath}/board?a=writeform&no=${vo.no }" id="new-book">답글쓰기 </a>
+						<a href="${pageContext.request.contextPath}/board/write" id="new-book">답글쓰기 </a>
 					</div>		
 					</c:when>
 				</c:choose>
