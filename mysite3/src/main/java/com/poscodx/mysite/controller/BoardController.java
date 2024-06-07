@@ -60,7 +60,7 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/write", method=RequestMethod.GET)
-	public String write(HttpSession session, Model model) {
+	public String write(HttpSession session) {
 		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		if(authUser == null) {
@@ -79,6 +79,31 @@ public class BoardController {
 		}
 
 		boardService.addContents(boardVo, authUser.getNo());
+		
+		return "redirect:/board";
+	}
+	
+	@RequestMapping(value="/write/{no}", method=RequestMethod.GET)
+	public String reply(HttpSession session, @PathVariable("no") Long no, Model model) {
+		// access control
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
+		if(authUser == null) {
+			return "redirect:/";
+		}
+		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
+		
+		return "board/reply";
+	}
+	
+	@RequestMapping(value="/write/{no}", method=RequestMethod.POST)
+	public String reply(HttpSession session, @PathVariable("no") Long no, BoardVo boardVo) {
+		// access control
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
+		if(authUser == null) {
+			return "redirect:/";
+		}
+
+		boardService.addReply(boardVo, no, authUser.getNo());
 		
 		return "redirect:/board";
 	}
@@ -108,7 +133,7 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
-	@RequestMapping(value="/delete/{no}", method=RequestMethod.POST)
+	@RequestMapping("/delete/{no}")
 	public String delete(HttpSession session, @PathVariable("no") Long no) {
 		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");

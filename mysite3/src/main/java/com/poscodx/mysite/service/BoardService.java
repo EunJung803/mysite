@@ -23,33 +23,62 @@ public class BoardService {
 		String title = boardVo.getTitle();
 		String contents = boardVo.getContents();
 		
-		Long no = boardVo.getNo();
+		BoardVo vo = new BoardVo();
+		
+		int maxGroupNo = boardRepository.findMaxGroupNo();
+		
+		vo.setTitle(title);
+		vo.setContents(contents);
+		vo.setHit(0);
+		vo.setGroupNo(maxGroupNo + 1);
+		vo.setOrderNo(1);
+		vo.setDepth(0);
+		vo.setUserNo(userNo);
+		
+//		if (no == null) {				// 새 글을 쓰는 경우
+//			int maxGroupNo = boardRepository.findMaxGroupNo();
+//			
+//			vo.setTitle(title);
+//			vo.setContents(contents);
+//			vo.setHit(0);
+//			vo.setGroupNo(maxGroupNo + 1);
+//			vo.setOrderNo(1);
+//			vo.setDepth(0);
+//			vo.setUserNo(userNo);
+//		} else {										// 답글을 다는 경우
+//			BoardVo parentVo = boardRepository.findByNo(no);
+//			
+//			vo.setTitle(title);
+//			vo.setContents(contents);
+//			vo.setHit(0);
+//			vo.setGroupNo(parentVo.getGroupNo());
+//			vo.setOrderNo(parentVo.getOrderNo() + 1);
+//			vo.setDepth(parentVo.getDepth() + 1);
+//			vo.setUserNo(userNo);
+//			
+//			boardRepository.updateOrderNo(parentVo);
+//		}
+		
+		boardRepository.insert(vo);
+	}
+	
+	public void addReply(BoardVo boardVo, Long no, Long userNo) {
+		String title = boardVo.getTitle();
+		String contents = boardVo.getContents();
 		
 		BoardVo vo = new BoardVo();
 		
-		if (no == null) {				// 새 글을 쓰는 경우
-			int maxGroupNo = boardRepository.findMaxGroupNo();
-			
-			vo.setTitle(title);
-			vo.setContents(contents);
-			vo.setHit(0);
-			vo.setGroupNo(maxGroupNo + 1);
-			vo.setOrderNo(1);
-			vo.setDepth(0);
-			vo.setUserNo(userNo);
-		} else {										// 답글을 다는 경우
-			BoardVo parentVo = boardRepository.findByNo(no);
-			
-			vo.setTitle(title);
-			vo.setContents(contents);
-			vo.setHit(0);
-			vo.setGroupNo(parentVo.getGroupNo());
-			vo.setOrderNo(parentVo.getOrderNo() + 1);
-			vo.setDepth(parentVo.getDepth() + 1);
-			vo.setUserNo(userNo);
-			
-			boardRepository.updateOrderNo(parentVo);
-		}
+		BoardVo parentVo = boardRepository.findByNo(no);
+		
+		vo.setTitle(title);
+		vo.setContents(contents);
+		vo.setHit(0);
+		vo.setGroupNo(parentVo.getGroupNo());
+		vo.setOrderNo(parentVo.getOrderNo() + 1);
+		vo.setDepth(parentVo.getDepth() + 1);
+		vo.setUserNo(userNo);
+		
+		boardRepository.updateOrderNo(parentVo);
 		
 		boardRepository.insert(vo);
 	}
@@ -92,7 +121,7 @@ public class BoardService {
 	}
 	
 	public void deleteContents(Long boardNo, Long userNo) {
-		boardRepository.deleteByNo(boardNo, userNo);
+		boardRepository.deleteByNoandUserNo(boardNo, userNo);
 	}
 	
 	public Map<String, Object> getContentsList(int currPageNum) {

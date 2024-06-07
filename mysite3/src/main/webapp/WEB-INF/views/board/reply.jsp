@@ -14,7 +14,7 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board/write">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board/write/${vo.no }">
 					<input type="hidden" name="no" value="${param.no }">
 					<table class="tbl-ex">
 						<tr>
@@ -35,7 +35,7 @@
 						<a href="${pageContext.request.contextPath}/board">취소</a>
 						<input type="submit" value="등록">
 					</div>
-				</form>	
+				</form>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />

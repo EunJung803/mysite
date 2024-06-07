@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id="findBoards" parameterType="int" resultType="boardvo">
+		<![CDATA[
+			select 
+				a.no as no, b.name as userName, a.title as title, date_format(a.reg_date, '%Y/%m/%d %h:%i:%s') as regDate, 
+				a.user_no as userNo, a.hit as hit, a.g_no as groupNo, a.o_no as orderNo, a.depth as depth 
+			from board a 
+			join user b 
+			on a.user_no = b.no 
+			order by a.g_no desc, a.o_no asc 
+			limit #{limitNum }, 5
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="boardvo">
+		<![CDATA[
+			insert 
+			into board(title, contents, hit, reg_date, g_no, o_no, depth, user_no) 
+			values(#{title }, #{contents }, #{hit }, now(), #{groupNo }, #{orderNo }, #{depth }, #{userNo })
+		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER">
+		<![CDATA[
+			select last_insert_id() from dual
+		]]>
+		</selectKey>
+	</insert>
+	
+	<select id="getTotalCount" resultType="int">
+		<![CDATA[
+			select count(no) from board
+		]]>
+	</select>
+	
+	<select id="findByNo" resultType="boardvo" parameterType="long">
+		<![CDATA[		
+			select 
+				a.no as no, b.name as userName, a.title as title, a.contents as contents, date_format(a.reg_date, '%Y/%m/%d %h:%i:%s') as regDate,
+				a.user_no as userNo, a.g_no as groupNo, a.o_no as orderNo, a.depth as depth 
+			from board a, user b 
+			where a.user_no = b.no 
+			and a.no = #{boardNo }
+		]]>
+	</select>
+	
+	<select id="findMaxGroupNo" resultType="int">
+		<![CDATA[
+			select max(g_no) from board
+		]]>
+	</select>
+	
+	<delete id="deleteByNoandUserNo" parameterType="map">
+		<![CDATA[
+			delete 
+			from board 
+			where no = #{boardNo } and user_no = #{userNo }
+		]]>
+	</delete>
+	
+	<update id="update" parameterType="map">
+		<![CDATA[
+			update 
+			board 
+			set title = #{vo.title }, contents = #{vo.contents } 
+			where no = #{vo.no } 
+			and user_no = #{userNo }
+		]]>
+	</update>
+	
+	<update id="updateOrderNo" parameterType="boardvo">
+		<![CDATA[
+			update board set o_no = o_no + 1 
+			where g_no = #{groupNo }
+			and o_no > #{orderNo }
+		]]>
+	</update>
+	
+	<update id="updateBoardHit" parameterType="long">
+		<![CDATA[
+			update board set hit = hit + 1 
+			where no = #{no }
+		]]>
+	</update>
+	
+	<select id="findByNoandUserNo" parameterType="map" resultType="boardvo">
+		<![CDATA[
+			select 
+				a.no as no, b.name as userName, a.title as title, a.contents as contents, date_format(a.reg_date, '%Y/%m/%d %h:%i:%s') as regDate, 
+				a.user_no as userNo, a.g_no as groupNo, a.o_no as orderNo, a.depth as depth 
+			from board a, user b 
+			where a.user_no = b.no 
+			and a.no = #{boardNo } 
+			and b.no = #{userNo }
+		]]>
+	</select>
+	
+
+	<!-- <select id="findAll" resultType="guestbookvo">
+		<![CDATA[
+			select no, name, contents, date_format(reg_date, '%Y/%m/%d %h:%i:%s') as regDate
+			from guestbook 
+			order by reg_date desc
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="guestbookvo">
+		<![CDATA[
+		insert into board(title, contents, hit, reg_date, g_no, o_no, depth, user_no) values(?, ?, ?, now(), ?, ?, ?, ?)
+			insert 
+			into guestbook 
+			values(null, #{name }, password(#{password }), #{contents }, now())
+		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER">
+		<![CDATA[
+			select last_insert_id() from dual
+		]]>
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteByNoAndPassword" parameterType="map">
+		<![CDATA[
+			delete 
+			from guestbook 
+			where no = #{no } and password = password(#{password })
+		]]>
+	</delete> -->
+</mapper>
+
