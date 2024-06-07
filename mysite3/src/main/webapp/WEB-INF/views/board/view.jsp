@@ -64,8 +64,10 @@
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
 		<c:import url="/WEB-INF/views/includes/footer.jsp" />
 	</div>
+	<c:if test="${not empty message}">
+		 <script type="text/javascript">
+		     alert("${message}");
+		 </script>
+	</c:if>
 </body>
 </html>
-<c:if test='${param.result == "success" }'>
-	<script>alert('성공적으로 수정 하였습니다.')</script>
-</c:if>

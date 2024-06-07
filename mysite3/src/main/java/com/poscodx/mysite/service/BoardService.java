@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.poscodx.mysite.repository.BoardRepository;
 import com.poscodx.mysite.vo.BoardVo;
@@ -19,68 +20,21 @@ public class BoardService {
 	@Autowired
 	private BoardRepository boardRepository;
 	
-	public void addContents(BoardVo boardVo, Long userNo) {
-		String title = boardVo.getTitle();
-		String contents = boardVo.getContents();
-		
-		BoardVo vo = new BoardVo();
-		
-		int maxGroupNo = boardRepository.findMaxGroupNo();
-		
-		vo.setTitle(title);
-		vo.setContents(contents);
-		vo.setHit(0);
-		vo.setGroupNo(maxGroupNo + 1);
-		vo.setOrderNo(1);
-		vo.setDepth(0);
-		vo.setUserNo(userNo);
-		
-//		if (no == null) {				// 새 글을 쓰는 경우
-//			int maxGroupNo = boardRepository.findMaxGroupNo();
-//			
-//			vo.setTitle(title);
-//			vo.setContents(contents);
-//			vo.setHit(0);
-//			vo.setGroupNo(maxGroupNo + 1);
-//			vo.setOrderNo(1);
-//			vo.setDepth(0);
-//			vo.setUserNo(userNo);
-//		} else {										// 답글을 다는 경우
-//			BoardVo parentVo = boardRepository.findByNo(no);
-//			
-//			vo.setTitle(title);
-//			vo.setContents(contents);
-//			vo.setHit(0);
-//			vo.setGroupNo(parentVo.getGroupNo());
-//			vo.setOrderNo(parentVo.getOrderNo() + 1);
-//			vo.setDepth(parentVo.getDepth() + 1);
-//			vo.setUserNo(userNo);
-//			
-//			boardRepository.updateOrderNo(parentVo);
-//		}
-		
-		boardRepository.insert(vo);
+	@Transactional
+	public void addContents(BoardVo boardVo) {
+		boardVo.setGroupNo(boardRepository.findMaxGroupNo() + 1);
+		boardRepository.insert(boardVo);
 	}
 	
+	@Transactional
 	public void addReply(BoardVo boardVo, Long no, Long userNo) {
-		String title = boardVo.getTitle();
-		String contents = boardVo.getContents();
-		
-		BoardVo vo = new BoardVo();
-		
 		BoardVo parentVo = boardRepository.findByNo(no);
 		
-		vo.setTitle(title);
-		vo.setContents(contents);
-		vo.setHit(0);
-		vo.setGroupNo(parentVo.getGroupNo());
-		vo.setOrderNo(parentVo.getOrderNo() + 1);
-		vo.setDepth(parentVo.getDepth() + 1);
-		vo.setUserNo(userNo);
+		boardVo.setGroupNo(parentVo.getGroupNo());
+		boardVo.setOrderNo(parentVo.getOrderNo() + 1);
+		boardVo.setDepth(parentVo.getDepth() + 1);
 		
-		boardRepository.updateOrderNo(parentVo);
-		
-		boardRepository.insert(vo);
+		boardRepository.insert(boardVo);
 	}
 	
 	public BoardVo getContents(Long no, Cookie[] cookies, HttpServletResponse response) {
@@ -112,14 +66,16 @@ public class BoardService {
 		return boardRepository.findByNo(no);
 	}
 	
-	public BoardVo getContents(Long boardNo, Long userNo) {	// 로그인한 사용자들을 위해 글 수정하기를 가져올 때 필요함
+	public BoardVo getContents(Long boardNo, Long userNo) {				// 로그인한 사용자들을 위해 글 수정하기를 가져올 때 필요함
 		return boardRepository.findByNoandUserNo(boardNo, userNo);
 	}
 	
+	@Transactional
 	public void updateContents(BoardVo vo, Long userNo) {
 		boardRepository.update(vo, userNo);
 	}
 	
+	@Transactional
 	public void deleteContents(Long boardNo, Long userNo) {
 		boardRepository.deleteByNoandUserNo(boardNo, userNo);
 	}

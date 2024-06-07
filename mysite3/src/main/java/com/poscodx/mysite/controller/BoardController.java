@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.poscodx.mysite.service.BoardService;
 import com.poscodx.mysite.vo.BoardVo;
@@ -78,7 +79,8 @@ public class BoardController {
 			return "redirect:/";
 		}
 
-		boardService.addContents(boardVo, authUser.getNo());
+		boardVo.setUserNo(authUser.getNo());
+		boardService.addContents(boardVo);
 		
 		return "redirect:/board";
 	}
@@ -102,7 +104,8 @@ public class BoardController {
 		if(authUser == null) {
 			return "redirect:/";
 		}
-
+		
+		boardVo.setUserNo(authUser.getNo());
 		boardService.addReply(boardVo, no, authUser.getNo());
 		
 		return "redirect:/board";
@@ -121,7 +124,7 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/update/{no}", method=RequestMethod.POST)
-	public String update(@PathVariable("no") Long no, HttpSession session, BoardVo boardVo) {
+	public String update(@PathVariable("no") Long no, HttpSession session, BoardVo boardVo, RedirectAttributes redirectAttributes) {
 		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		if(authUser == null) {
@@ -129,8 +132,9 @@ public class BoardController {
 		}
 
 		boardService.updateContents(boardVo, authUser.getNo());
+		redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
 		
-		return "redirect:/board";
+		return "redirect:/board/view/" + boardVo.getNo();
 	}
 	
 	@RequestMapping("/delete/{no}")
