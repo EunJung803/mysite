@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.poscodx.mysite.security.Auth;
-import com.poscodx.mysite.security.AuthUser;
 import com.poscodx.mysite.service.BoardService;
 import com.poscodx.mysite.vo.BoardVo;
 import com.poscodx.mysite.vo.UserVo;
@@ -56,6 +55,7 @@ public class BoardController {
 		return "board/view";
 	}
 	
+	
 	/* 새글 */
 	@Auth
 	@RequestMapping(value="/write", method=RequestMethod.GET)
@@ -68,11 +68,21 @@ public class BoardController {
 	public String write(HttpSession session, BoardVo boardVo) {
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		
+		/* 
+		// access control
+		if(authUser == null) {
+			return "redirect:/";
+		}
+		////////////////////////
+		 * 
+		 */
+		
 		boardVo.setUserNo(authUser.getNo());
 		boardService.addContents(boardVo);
 		
 		return "redirect:/board";
 	}
+	
 	
 	/* 답글 */
 	@Auth
@@ -96,21 +106,13 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
-	/* 수정 */
-//	@Auth
-//	@RequestMapping(value="/update/{no}", method=RequestMethod.GET)
-//	public String update(@PathVariable("no") Long no, HttpSession session, Model model) {
-//		UserVo authUser = (UserVo)session.getAttribute("authUser");
-//		
-//		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
-//		
-//		return "board/update";
-//	}
 	
-	// argument resolver 로 횡단관심 제거하기
+	/* 수정 */
 	@Auth
 	@RequestMapping(value="/update/{no}", method=RequestMethod.GET)
-	public String update(@PathVariable("no") Long no, @AuthUser UserVo authUser, Model model) {
+	public String update(@PathVariable("no") Long no, HttpSession session, Model model) {
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
+		
 		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
 		
 		return "board/update";
@@ -126,6 +128,7 @@ public class BoardController {
 		
 		return "redirect:/board/view/" + boardVo.getNo();
 	}
+	
 	
 	/* 삭제 */
 	@Auth
