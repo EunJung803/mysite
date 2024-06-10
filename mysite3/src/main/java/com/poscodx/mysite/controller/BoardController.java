@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.poscodx.mysite.security.Auth;
+import com.poscodx.mysite.security.AuthUser;
 import com.poscodx.mysite.service.BoardService;
 import com.poscodx.mysite.vo.BoardVo;
 import com.poscodx.mysite.vo.UserVo;
@@ -42,68 +44,51 @@ public class BoardController {
 		return "board/list";
 	}
 	
-//	@RequestMapping("/view/{no}")
-//	public String view(@PathVariable("no") Long no, Model model) {
-//		model.addAttribute("vo", boardService.getContents(no));
-//		
-//		return "board/view";
-//	}
-	
-	// 쿠키 조회수 추가
+	/* read */
 	@RequestMapping("/view/{no}")
 	public String view(@PathVariable("no") Long no, Model model, HttpServletResponse response, 
 						@CookieValue(value = "hit", defaultValue = "") String hitCookieValue) {
 		
+		// 쿠키 조회수
 		Cookie[] cookies = new Cookie[]{new Cookie("hit", hitCookieValue)};
 		model.addAttribute("vo", boardService.getContents(no, cookies, response));
 		
 		return "board/view";
 	}
 	
+	/* 새글 */
+	@Auth
 	@RequestMapping(value="/write", method=RequestMethod.GET)
-	public String write(HttpSession session) {
-		// access control
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
-		
+	public String write() {
 		return "board/write";
 	}
 	
+	@Auth
 	@RequestMapping(value="/write", method=RequestMethod.POST)
 	public String write(HttpSession session, BoardVo boardVo) {
-		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
-
+		
 		boardVo.setUserNo(authUser.getNo());
 		boardService.addContents(boardVo);
 		
 		return "redirect:/board";
 	}
 	
+	/* 답글 */
+	@Auth
 	@RequestMapping(value="/write/{no}", method=RequestMethod.GET)
 	public String reply(HttpSession session, @PathVariable("no") Long no, Model model) {
-		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
+		
 		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
 		
 		return "board/reply";
 	}
 	
+	@Auth
 	@RequestMapping(value="/write/{no}", method=RequestMethod.POST)
 	public String reply(HttpSession session, @PathVariable("no") Long no, BoardVo boardVo) {
-		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
 		
 		boardVo.setUserNo(authUser.getNo());
 		boardService.addReply(boardVo, no, authUser.getNo());
@@ -111,39 +96,42 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
+	/* 수정 */
+//	@Auth
+//	@RequestMapping(value="/update/{no}", method=RequestMethod.GET)
+//	public String update(@PathVariable("no") Long no, HttpSession session, Model model) {
+//		UserVo authUser = (UserVo)session.getAttribute("authUser");
+//		
+//		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
+//		
+//		return "board/update";
+//	}
+	
+	// argument resolver 로 횡단관심 제거하기
+	@Auth
 	@RequestMapping(value="/update/{no}", method=RequestMethod.GET)
-	public String update(@PathVariable("no") Long no, HttpSession session, Model model) {
-		// access control
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
+	public String update(@PathVariable("no") Long no, @AuthUser UserVo authUser, Model model) {
 		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
 		
 		return "board/update";
 	}
 	
+	@Auth
 	@RequestMapping(value="/update/{no}", method=RequestMethod.POST)
 	public String update(@PathVariable("no") Long no, HttpSession session, BoardVo boardVo, RedirectAttributes redirectAttributes) {
-		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
-
+		
 		boardService.updateContents(boardVo, authUser.getNo());
 		redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
 		
 		return "redirect:/board/view/" + boardVo.getNo();
 	}
 	
+	/* 삭제 */
+	@Auth
 	@RequestMapping("/delete/{no}")
 	public String delete(HttpSession session, @PathVariable("no") Long no) {
-		// access control
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
 		
 		boardService.deleteContents(no, authUser.getNo());
 		
