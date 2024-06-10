@@ -1,16 +1,11 @@
 package com.poscodx.mysite.repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StopWatch;
 
 import com.poscodx.mysite.vo.GuestbookVo;
 
@@ -30,6 +25,17 @@ public class GuestbookRepository {
 	
 	public List<GuestbookVo> findAll() {
 		return sqlSession.selectList("guestbook.findAll");
+//		StopWatch sw = new StopWatch();
+//		sw.start();
+//		
+//		List<GuestbookVo> list = sqlSession.selectList("guestbook.findAll");
+//		
+//		sw.stop();
+//		long totalTime = sw.getTotalTimeMillis();
+//		
+//		System.out.println(totalTime);
+//		
+//		return list;
 	}
 	
 	public int deleteByNoAndPassword(Long no, String password) {
