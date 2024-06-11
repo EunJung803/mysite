@@ -32,10 +32,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 		// 4. Handler Method에 @Auth가 없으면 Type(Class)에 붙어있는지 확인
 		if(auth == null) {
-			// TODO
+			auth = handlerMethod
+					.getMethod()
+					.getDeclaringClass()
+					.getAnnotation(Auth.class);
 		}
 		
-		// 5. 컨트롤러에 있는 HandlerMethod에 @Auth가 없는 경우
+		// 5. Type이나 Method에 @Auth가 없는 경우
 		if(auth == null) {
 			// 없으니까 그냥 뒤에 있는 핸들러 실행, 동작이 필요 없음 
 			return true;

@@ -31,7 +31,7 @@ public class UserRepository {
 	}
 
 	public int update(UserVo vo) {
-		return sqlSession.update("user.update", vo);	
+		return sqlSession.update("user.update", vo);
 	}
 	
 }
