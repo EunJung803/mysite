@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.poscodx.mysite.security.Auth;
+import com.poscodx.mysite.security.AuthUser;
 import com.poscodx.mysite.service.BoardService;
 import com.poscodx.mysite.vo.BoardVo;
 import com.poscodx.mysite.vo.UserVo;
@@ -65,18 +66,7 @@ public class BoardController {
 	
 	@Auth
 	@RequestMapping(value="/write", method=RequestMethod.POST)
-	public String write(HttpSession session, BoardVo boardVo) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
-		/* 
-		// access control
-		if(authUser == null) {
-			return "redirect:/";
-		}
-		////////////////////////
-		 * 
-		 */
-		
+	public String write(@AuthUser UserVo authUser, BoardVo boardVo) {
 		boardVo.setUserNo(authUser.getNo());
 		boardService.addContents(boardVo);
 		
@@ -87,9 +77,7 @@ public class BoardController {
 	/* 답글 */
 	@Auth
 	@RequestMapping(value="/write/{no}", method=RequestMethod.GET)
-	public String reply(HttpSession session, @PathVariable("no") Long no, Model model) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
+	public String reply(@AuthUser UserVo authUser, @PathVariable("no") Long no, Model model) {
 		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
 		
 		return "board/reply";
@@ -97,9 +85,7 @@ public class BoardController {
 	
 	@Auth
 	@RequestMapping(value="/write/{no}", method=RequestMethod.POST)
-	public String reply(HttpSession session, @PathVariable("no") Long no, BoardVo boardVo) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
+	public String reply(@AuthUser UserVo authUser, @PathVariable("no") Long no, BoardVo boardVo) {
 		boardVo.setUserNo(authUser.getNo());
 		boardService.addReply(boardVo, no, authUser.getNo());
 		
@@ -110,9 +96,7 @@ public class BoardController {
 	/* 수정 */
 	@Auth
 	@RequestMapping(value="/update/{no}", method=RequestMethod.GET)
-	public String update(@PathVariable("no") Long no, HttpSession session, Model model) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
+	public String update(@PathVariable("no") Long no, @AuthUser UserVo authUser, Model model) {
 		model.addAttribute("vo", boardService.getContents(no, authUser.getNo()));
 		
 		return "board/update";
@@ -120,9 +104,7 @@ public class BoardController {
 	
 	@Auth
 	@RequestMapping(value="/update/{no}", method=RequestMethod.POST)
-	public String update(@PathVariable("no") Long no, HttpSession session, BoardVo boardVo, RedirectAttributes redirectAttributes) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
+	public String update(@PathVariable("no") Long no, @AuthUser UserVo authUser, BoardVo boardVo, RedirectAttributes redirectAttributes) {
 		boardService.updateContents(boardVo, authUser.getNo());
 		redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
 		
@@ -133,9 +115,7 @@ public class BoardController {
 	/* 삭제 */
 	@Auth
 	@RequestMapping("/delete/{no}")
-	public String delete(HttpSession session, @PathVariable("no") Long no) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
+	public String delete(@AuthUser UserVo authUser, @PathVariable("no") Long no) {
 		boardService.deleteContents(no, authUser.getNo());
 		
 		return "redirect:/board";
