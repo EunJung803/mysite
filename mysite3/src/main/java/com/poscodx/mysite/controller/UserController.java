@@ -45,8 +45,6 @@ public class UserController {
 	@Auth
 	@RequestMapping(value="/update", method=RequestMethod.GET)
 	public String update(@AuthUser UserVo authUser, Model model) {		// argument resolver 로 횡단관심 제거하기
-//		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		
 		UserVo vo = userService.getUser(authUser.getNo());
 		model.addAttribute("userVo", vo);
 		
